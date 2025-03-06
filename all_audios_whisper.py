@@ -4,10 +4,13 @@ import os
 from pydub import AudioSegment
 
 # Lade das Modell (z.B. "small", "medium", "large")
-model = whisper.load_model("small")
+model = whisper.load_model("small.en")
 
 # Pfad zum Ordner mit den Audiodateien
-audio_folder = "C:/Users/hanna/OneDrive - Universität des Saarlandes/Dokumente/Semester 9/Software Project/Audios"
+#audio_folder = "C:/Users/hanna/OneDrive - Universität des Saarlandes/Dokumente/Semester 9/Software Project/Audios"
+
+audio_folder = "D:/Acapellas-wav"
+
 
 
 # Gehe alle Dateien im Audio-Ordner durch
@@ -24,11 +27,23 @@ for filename in os.listdir(audio_folder):
 
         # Transkribiere die aktuelle Audiodatei mit Zeitstempeln
         result = whisper.transcribe(model, audio_path)
-
+    
         # Iterate über erkannte Segmente
+        # for i, segment in enumerate(result["segments"]):
+        #     start = segment["start"]
+        #     end = segment["end"] + 1.5
+        
+                
         for i, segment in enumerate(result["segments"]):
             start = segment["start"]
-            end = segment["end"] + 1.5
+
+            # Prüfe, ob es ein nächstes Segment gibt
+            if i < len(result["segments"]) - 1:
+                # Ende des aktuellen Segments = Start des nächsten Segments
+                end = result["segments"][i+1]["start"] - 0.1
+            else:
+                # Beim letzten Segment einfach die ursprüngliche Endzeit + etwas Puffer
+                end = segment["end"]   # Optionaler Puffer am Ende der Datei
 
             # Dateipfade für Audio- und Text-Segment
             segment_audio_path = os.path.join(output_folder, f"segment_{i}.wav")
