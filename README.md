@@ -80,6 +80,18 @@ Once fine-tuning is complete, generate vocals with **Chester’s voice**.
 
 
 ---
+used resources:
+# Related Repositories
+
+These repositories are used in this project:
+
+- [SingingVocoders](https://github.com/openvpi/SingingVocoders?tab=readme-ov-file) – Vocoder models for singing voice synthesis  
+- [DiffSinger](https://github.com/openvpi/DiffSinger) – A deep learning model for singing voice synthesis  
+- [nnsvs-db-converter](https://github.com/UtaUtaUtau/nnsvs-db-converter) – A tool for converting singing voice databases  
+- [LabelMakr](https://github.com/spicytigermeat/LabelMakr) – A tool for generating timing labels  
+- [Montreal Forced Aligner](https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner) – A tool for automatic text-to-speech alignment  
+- [SOFA-Modded](https://github.com/Greenleaf2001/SOFA-Modded) – A modified version of SOFA with additional features  
+
 
 ## 📚 **6. References**
 - 📄 **Pitch Contour Learning:** [PiCo-VITS](https://link.springer.com/chapter/10.1007/978-3-031-70566-3_19)
