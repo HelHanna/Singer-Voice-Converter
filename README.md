@@ -85,12 +85,16 @@ used resources:
 
 These repositories are used in this project:
 
-- [SingingVocoders](https://github.com/openvpi/SingingVocoders?tab=readme-ov-file) – Vocoder models for singing voice synthesis  
-- [DiffSinger](https://github.com/openvpi/DiffSinger) – A deep learning model for singing voice synthesis  
+- [DiffSinger](https://github.com/openvpi/DiffSinger) – A deep learning model for singing voice synthesis (enhanced version with variance model support based on MoonInTheRiver)
+- [DiffSinger](https://github.com/MoonInTheRiver/DiffSinger) - A deep learning model for singing voice synthesis
+- [SingingVocoders](https://github.com/openvpi/SingingVocoders) – Vocoder models for singing voice synthesis  
 - [nnsvs-db-converter](https://github.com/UtaUtaUtau/nnsvs-db-converter) – A tool for converting singing voice databases  
 - [LabelMakr](https://github.com/spicytigermeat/LabelMakr) – A tool for generating timing labels  
 - [Montreal Forced Aligner](https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner) – A tool for automatic text-to-speech alignment  
-- [SOFA-Modded](https://github.com/Greenleaf2001/SOFA-Modded) – A modified version of SOFA with additional features  
+- [SOFA-Modded](https://github.com/Greenleaf2001/SOFA-Modded) – A modified version of SOFA with additional features
+- [diffsinger-english-support](https://github.com/intunist/diffsinger-english-support) - A phoneme dictionary for DiffSinger databases
+- [TextGrid2Lab](https://github.com/siship/TextGrid2Lab-Conversion) - Converter for TextGrid to Lab files
+- [SingMOS](https://github.com/South-Twilight/SingMOS) - Evaluation Tool for Mean Opinion Score prediction
 
 
 ## 📚 **6. References**
