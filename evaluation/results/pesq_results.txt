@@ -1,0 +1,9 @@
+PESQ (segments/gt): 4.644
+PESQ (segments\v1): 1.232
+PESQ (segments\v3): 1.883
+PESQ (segments\v4): 1.135
+PESQ (segments\v5_3): 1.339
+PESQ (segments\v5_ft): 1.295
+PESQ (segments\v6): 1.917
+PESQ (segments\v7): 1.656
+PESQ (segments\v8): 1.474

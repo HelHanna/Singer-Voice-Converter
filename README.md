@@ -82,6 +82,15 @@ We trained **nine different models**, experimenting with varying configurations,
 - **Model 8 (Augmented Dataset)**: Augmented with pitch/time shifts, 78k epochs, validation loss: 0.01.
 - **Model 9 (Augmented + Fine-Tuned Vocoder)**: Large augmented dataset with fine-tuned vocoder, 113k epochs, validation loss: 0.011.
 
+---
+
+#### Evaluation
+
+## Criteria
+
+- **Perceptual Evaluation of Speech Quality (PESQ)**: Objective Mean Opinion Score, mimics how the human ear hears sound.
+- **F0 Root Mean Square Error**: Root mean square error of fundamental frequency (pitch).
+- **Speech-to-noise ratio**: Ratio of speech to background noise.
 
 ---
 
@@ -108,6 +117,7 @@ These repositories are used in this project:
 - [diffsinger-english-support](https://github.com/intunist/diffsinger-english-support) - A phoneme dictionary for DiffSinger databases
 - [TextGrid2Lab](https://github.com/siship/TextGrid2Lab-Conversion) - Converter for TextGrid to Lab files
 - [SingMOS](https://github.com/South-Twilight/SingMOS) - Evaluation Tool for Mean Opinion Score prediction
+- [Evaluation metrics](https://github.com/SandyPanda-MLDL/-Evaluation-Metrics-Used-For-The-Performance-Evaluation-of-Voice-Conversion-VC-Models) - Performance evaluation metrics for voice conversion models
 
 
 

@@ -1,0 +1,9 @@
+SNR (segments/gt): 0.0
+SNR (segments\v1): 2.329
+SNR (segments\v3): 0.86
+SNR (segments\v4): 2.696
+SNR (segments\v5_3): 1.025
+SNR (segments\v5_ft): 1.884
+SNR (segments\v6): 1.332
+SNR (segments\v7): 2.209
+SNR (segments\v8): 3.394
