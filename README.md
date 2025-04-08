@@ -1,83 +1,88 @@
-# 🎤 **Singer Voice Synthesis (SVS) with Chester Bennington's Voice**
+# 🎙️ Singing Voice Synthesis with Chester Bennington's Voice
 
-## **Overview**
-This project focuses on **Singer Voice Synthesis (SVS)** using **Chester Bennington’s voice** to generate new singing performances. The goal is to train an **SVS model** capable of generating realistic singing vocals with Chester’s unique **timbre, pitch control, vibrato, and vocal fry**.
 
----
+## Project Overview
+This project aims to emulate Chester Bennington's vocal style using a fine-tuned DiffSinger model. The goal is to generate a new rendition of a track from *From Zero* with Chester's distinctive timbre, vocal fry, and expressive pitch dynamics.
 
-## 🔍 **1. Preprocessing**
-To build a high-quality dataset, we extract and prepare Chester’s vocals from existing recordings.
+- **Model:** Fine-tuned DiffSinger
+- **Output:** Model-generated vocals mixed into an instrumental track using Reaper.
 
-### 🎶 **1.1 Vocal Isolation**
-- Extract **acapella vocals** from Linkin Park tracks using:
-  - 🎵 **Demucs**
-  - 🎵 **Spleeter**
-  - 🎵 **UVR (Ultimate Vocal Remover)**
-- Ensure **clean, high-fidelity audio** (48kHz, 24-bit WAV format).
+## Dataset Creation
+We compiled a dataset to capture the range of Chester’s vocal characteristics:
 
-### **1.2 Lyrics & Phoneme Alignment**
-- Use **Montreal Forced Aligner (MFA)** to align lyrics with audio.
-- Convert lyrics to **phonemes** for SVS models.
+- **Source:** 8 Linkin Park albums (~100 tracks)
+- **Method:** Curated from YouTube for high-quality audio, focusing on both studio and live recordings to capture diverse vocal traits.
 
-### **1.3 Feature Extraction**
-- Compute **Mel Spectrograms**.
-- Extract **Fundamental Frequency (F0)**.
-- Generate **Speaker Embeddings** (ECAPA-TDNN, Wav2Vec).
+## Preprocessing Pipeline
 
----
+### Raw Audio & Vocal Isolation
+- Gathered high-quality recordings from YouTube, ensuring variety by including both studio and live tracks.
+- Isolated vocals using Ultimate Vocal Remover (UVR), achieving the cleanest vocal output.
 
-## **2. Training**
-To synthesize Chester’s voice, we fine-tune a **pretrained Singing Voice Synthesis (SVS) model**.
+### Audio Segmentation
+- Used Whisper for precise word-level segmentation and custom Python scripts for alignment.
+- Segmented audio to improve model training and alignment precision.
 
-### 🧠 **2.1 Model Selection**
-Choose a **pretrained SVS model** as the base:
--  **SoVITS** (Speech-to-Singing adaptation, high flexibility)
--  **Diff-SVC** (Diffusion-based SVS, high quality)
--  **X-Singer** (Advanced neural singing synthesis)
+### Forced Alignment & Labeling
+- Utilized LabelMakr for phoneme-level alignment, ensuring accurate training data for DiffSinger.
 
-### **2.2 Data Preparation for Training**
-- Train on extracted **vocal features** (spectrograms, F0, speaker embeddings).
-- Use **phoneme-aligned lyrics** to improve accuracy.
+## Model Architecture
 
-### 🏋️ **2.3 Training Steps**
-- Freeze early model layers, fine-tune the **timbre and phoneme duration layers**.
-- Optimize loss functions:
-  - **Pitch Loss** → Ensures pitch accuracy.
-  - **Phoneme Duration Loss** → Improves timing.
-  - **Spectral Envelope Matching** → Preserves timbre & texture.
+### Singing Voice Synthesis (SVS)
+DiffSinger was selected due to its high-fidelity, expressive vocals. The model predicts frame-level acoustic features and generates audio using a vocoder.
 
----
+**Why DiffSinger?**
+- **Naturalness:** Produces expressive, high-fidelity vocals.
+- **Control:** Full flexibility over pitch, duration, and phonemes.
+- **Community Support:** Open-source with strong documentation.
 
-##  **3. Fine-Tuning Chester’s Vocal Style**
-Chester’s **aggression, vibrato, vocal fry, and roughness** require additional fine-tuning.
+## Data Augmentation
+To enhance the training process, we applied minor data augmentations like pitch shifting and time shifting to improve model robustness and reduce overfitting.
 
-### 🎼 **3.1 Pitch & Timbre Fine-Tuning**
-- 🎵 **Fundamental Frequency (F0) Adjustment:**
-  - Learn Chester’s **pitch variations**.
-  - Use **Pitch Contour Learning** to prevent robotic singing.
 
-### 🕒 **3.2 Rhythm & Timing Adjustments**
-- ⏳ **Dynamic Time Warping (DTW)** aligns generated vocals to Chester’s natural timing.
-- 🔠 **Phoneme Duration Prediction** ensures correct note phrasing.
+#### Augmentation Techniques
 
-###  **3.3 Timbre & Vocal Texture Adaptation**
-- **Speaker Embedding Optimization** for better timbre transfer.
-- **Spectral Envelope Matching** preserves formants.
-- **Style Modeling (VAE, Style Tokens)** adds vocal fry, growl, and vibrato.
+The **DiffSinger repository** offers built-in augmentation settings:
+- **Pitch shifting**: Random or fixed, ±5 semitones (default).
+- **Time stretching**: 0.5x to 2.0x speed, default scale factor: 0.75.
+
+We opted for the **default preset parameters** to maintain data integrity while adding variation.  
+In addition, we manually applied further augmentations to Chester Bennington’s voice:
+- **Pitch Shifting**: ±1 semitone shift (creating two new samples).
+- **Loudness Adjustment**: Volume change by 10%.
+- **Noise Reduction**: Mild denoising (~30% reduction) using a high-pass filter.
+- **Speed Alteration**: ±10% speed change to simulate different tempos.
 
 ---
 
-## 🎧 **4. Inference: Generating New Vocals**
-Once fine-tuning is complete, generate vocals with **Chester’s voice**.
+#### Training Setup
 
-### 📝 **4.1 Input Data**
-- **Lyrics + MIDI (melody)**.
-- Or **lyrics + reference vocal** for conversion-based synthesis.
+We based our work on the [openvpi DiffSinger repository](https://github.com/openvpi/DiffSinger) due to its superior documentation and added features, such as the **variance model** for better results. Training was carried out on the **LST compute cluster** at Saarland University with **HTCondor** for job scheduling.
 
-### 🎚 **4.2 Post-Processing**
-- Apply **EQ, reverb, compression**.
-- Mix with instrumental track.
+**Key Setup**:
+- **GPU Allocation**: 1 GPU, 16 GB memory per job.
+- **Dependencies**: Custom conda environment (Python 3.8.20) with required packages.
+- **Vocoder**: HifiGAN vocoder, fine-tuned for Chester’s voice to enhance mel-spectrogram conversion.
 
+---
+
+#### Model Variations
+
+We trained **nine different models**, experimenting with varying configurations, datasets, and augmentation techniques. Key results:
+
+- **Model 1**: Small model, 9900 epochs, used for basic testing.
+- **Model 4 (Clean)**: Clean dataset, 6 hours, 52k epochs for better performance with cleaner data.
+- **Model 5 (Fine-Tuned Vocoder)**: Fine-tuned HifiGAN vocoder, 1.5 hours, 8000 epochs, improved audio quality.
+- **Model 9 (Augmented + Fine-Tuned Vocoder)**: Large augmented dataset with fine-tuned vocoder, 113k epochs, validation loss: 0.011.
+
+---
+
+#### Mixing & Mastering
+
+After generating the vocals, we applied several post-processing techniques to improve the sound:
+- **Noise reduction** and **volume adjustments** for better clarity.
+- **Compression** to stabilize dynamics and prevent clipping.
+- **Saturation** to replicate Chester Bennington's raspy, warm vocal tone.
 
 ---
 used resources:
@@ -97,10 +102,6 @@ These repositories are used in this project:
 - [SingMOS](https://github.com/South-Twilight/SingMOS) - Evaluation Tool for Mean Opinion Score prediction
 
 
-## 📚 **6. References**
-- 📄 **Pitch Contour Learning:** [PiCo-VITS](https://link.springer.com/chapter/10.1007/978-3-031-70566-3_19)
-- 📄 **Dynamic Time Warping:** [SoftDTW](https://arxiv.org/abs/2304.05032)
-- 📄 **Speaker Embedding Optimization:** [AlignSTS](https://aclanthology.org/2023.findings-acl.442.pdf)
 
 
 
