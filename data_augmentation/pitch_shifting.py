@@ -4,30 +4,36 @@ import soundfile as sf
 import re
 import shutil
 
+"""
+This script is part of the data augmentation. 
+It increases and decreases the pitch of the wav files
+in order to make the model more robust to pitch variations
 
-input_folder = "D:/LabelMakr_v030/corpus/song2_similar"
-output_folder = "D:/LabelMakr_v030/corpus/song2_similar/augmented_wavs"
-txt_eingabe_ordner = "D:/LabelMakr_v030/corpus/song2_similar"
+"""
 
-# os.makedirs(output_folder, exist_ok=True)
+input_folder = "Path/to/wavs"
+output_folder = "Output/Path"
+txt_eingabe_ordner = "Path/to/txts"
 
-# for filename in os.listdir(input_folder):
-#     if filename.endswith(".wav") and re.search(r'\b\d{9}\b', filename):
-#         filepath = os.path.join(input_folder, filename)
-#         y, sr = librosa.load(filepath, sr=44100)
+os.makedirs(output_folder, exist_ok=True)
 
-#         # Pitch Shifting um +2 Halbtöne
-#         y_up = librosa.effects.pitch_shift(y, sr=sr, n_steps=1)
-#         sf.write(os.path.join(output_folder, f"up_{filename}"), y_up, sr)
+for filename in os.listdir(input_folder):
+    if filename.endswith(".wav") and re.search(r'\b\d{9}\b', filename): # note: the number is used as our files start with 9 digits, can be changed/removed according to your needs
+        filepath = os.path.join(input_folder, filename)
+        y, sr = librosa.load(filepath, sr=44100)
 
-#         # Pitch Shifting um -2 Halbtöne
-#         y_down = librosa.effects.pitch_shift(y, sr=sr, n_steps=-1)
-#         sf.write(os.path.join(output_folder, f"down_{filename}"), y_down, sr)
+        # shift pitch +1 half note
+        y_up = librosa.effects.pitch_shift(y, sr=sr, n_steps=1)
+        sf.write(os.path.join(output_folder, f"up_{filename}"), y_up, sr)
 
-# print("Pitch-Shifting abgeschlossen!")
+        # shift pitch -1 half note
+        y_down = librosa.effects.pitch_shift(y, sr=sr, n_steps=-1)
+        sf.write(os.path.join(output_folder, f"down_{filename}"), y_down, sr)
+
+print("Pitch-Shifting done!")
 
 
-#Überprüfen, welche TXT-Dateien existieren und zwei Versionen speichern
+# save two versions of txts (down and up)
 for dateiname in os.listdir(txt_eingabe_ordner):
     if dateiname.endswith(".txt") and re.search(r'\b\d{9}\b', dateiname):
         txt_pfad = os.path.join(txt_eingabe_ordner, dateiname)
@@ -36,4 +42,4 @@ for dateiname in os.listdir(txt_eingabe_ordner):
             neues_txt_name = f"{prefix}{dateiname}"
             shutil.copy(txt_pfad, os.path.join(output_folder, neues_txt_name))
 
-print("TXT-Dateien mit slow_ und fast_ hinzugefügt!")
+print("txts saved!")

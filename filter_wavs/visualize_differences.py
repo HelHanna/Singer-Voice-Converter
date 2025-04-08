@@ -5,6 +5,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+"""
+This script helps to visualize the differences between 
+two separate categories; e.g. between wavs containing a 
+single singer and multiple singers
+Note: there are several plots in the end that you can just comment out
+if you're only interested in the csv file
+
+"""
+
 # folders that contain examples of two different categories
 # change categories according to your desired comparison
 example_folders = {
@@ -30,7 +39,7 @@ def extract_features(file_path):
 
         return [zcr, spectral_flatness, hnr, f0_mean, f0_var, spectral_centroid, spectral_bandwidth, rms]
     except Exception as e:
-        print(f"⚠ Fehler bei {file_path}: {e}")
+        print(f"error in {file_path}: {e}")
         return None
 
 # save the data
@@ -48,7 +57,7 @@ columns = ["Kategorie", "Datei", "ZCR", "Spectral Flatness", "HNR", "F0 Mean", "
 df = pd.DataFrame(data, columns=columns)
 
 # save the data as a csv file for further analysis
-csv_path = "feature_analysis_2.csv"
+csv_path = "feature_analysis.csv"
 df.to_csv(csv_path, index=False)
 print(f"feature data saved as {csv_path}")
 

@@ -1,0 +1,7 @@
+{
+    "vowels" : ["aa", "ae", "ah", "ao", "aw", "ay", "eh", "ey", "ih", "uh", "uw", "er", "oy", "ow"],
+    "liquids" : {
+        "w" : ["k", "g"],
+        "y" : true
+    }
+}
