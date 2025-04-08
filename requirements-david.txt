@@ -1,0 +1,15 @@
+demucs
+openunmix
+spleeter
+torch
+numpy
+scipy
+librosa
+soundfile
+tqdm
+matplotlib
+musdb
+stempeg
+norbert
+pytorch-lightning
+ffmpeg-python

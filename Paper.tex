@@ -23,11 +23,14 @@
 \usepackage{color}
 \usepackage{colortbl}
 \usepackage{capt-of}
+\usepackage{booktabs}
+
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlength{\headheight}{24pt}
-\setlength{\headsep}{24pt}
+\setlength{\headsep}{1.5cm}
+\setlength{\footskip}{0cm}
 
 \frenchspacing
 \pagestyle{fancy}
@@ -41,20 +44,19 @@
 		\subtitle \\
 \end{tabular}}
 
-\rhead{\begin{tabular}{rc} 
+\rhead{\begin{tabular}{r} 
 		\StudNameOne\\
 		\StudNameTwo\\
 		\StudNameThree\\
 		\StudNameFour\\
 \end{tabular}}
 
-\author{\StudNumeOne}
 
 \newcommand{\subtitle}{\textbf{Singing Voice Synthesis with DiffSinger}}
 \newcommand{\StudNameOne}{\textbf{David Matkovic} - 7038335 }
 \newcommand{\StudNameTwo}{\textbf{Jona Hoppe} - 7034173}
 \newcommand{\StudNameThree}{\textbf{Hanna Helbig} - 7008726}
-\newcommand{\StudNameFour}{\textbf{Maximilian Schmidt} - 2356}
+\newcommand{\StudNameFour}{\textbf{Maximilian Schmidt} - 2560076}
 
 \usepackage{setspace}  % Include the setspace package
 
@@ -63,16 +65,20 @@
 
 \begin{document}
 	
+	
+	\tableofcontents
+	\newpage
+	
 	%==============================================
 	%================ Introduction =================
 	%==============================================
-	\section*{Introduction}
+	\section{Introduction}
  
  	Our work presents a method for emulating the vocal style of the late Chester Bennington, the former lead singer of Linkin Park. Our goal was to synthesize a new version of a song from the latest album “From Zero” using Chester Bennington’s distinctive voice. For this purpose, we used a pre-trained Singing Voice Synthesis (SVS) model called Diffsinger.
 We compiled a dataset from the complete official discography of Linkin Park, including both studio and live recordings. This mixed dataset was deliberately chosen to expose the model to a range of different voice variations and production techniques over the years in order to make the model more robust.
 After obtaining the data, we proceeded to isolate the vocal tracks with the help of several deep learning-based source separation tools. Subsequently, the extracted vocal tracks were segmented and aligned in preparation for the training. In the end, we used Reaper to mix the model’s output and combined it with the instrumental track of the album.
 
-	
+	\newpage
 	
 	%==============================================
 	%================ Model Architecture =================
@@ -134,6 +140,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	generated data to be a lot worse, since less steps are used and therefore less
 	noise is removed.
 	
+	\newpage
 	
 	%==============================================
 	%================ Preprocessing ================
@@ -229,7 +236,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	
 	
 	
-	
+	\newpage
 	
 	%==============================================
 	%================ Training =====================
@@ -416,6 +423,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	
 	Our last attempt was to train a model with data augmentation that included even more data (almost the entire dataset, except for some filtered noise/screams and rap), even though this data included some more overlapping singing and try data augmentation on this model as well. The parameters were kept constant compared to the smaller augmented model. However, this time we used our fine-tuned vocoder. We stopped the training after 113k epochs when it reached a validation loss of 0.011.
 	
+	\newpage
 	
 	%==============================================
 	%================ Evaluation ===================
@@ -464,9 +472,22 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	
 	For our project, we integrated the SingMOS model \cite{Tang2024}, a predictor particularly developed for the evaluation of singing voice synthesis models. The collected test dataset consist of 15 segments, purposed to provide a broad coverage of Chester’s different singing styles including screams and shoutings (all segments are as noiseless as possible). The finetune+vocoder and variance+vocoder model were unable to generate inferences of one test segmented, so we left the affected segment out for both models. Additionally we predicted the MOS for the vocal separated audio files to receive a gold standard value - scoring a value of 2.995.
 	
-	\color{red}table of mos results\color{black}
+	\begin{table}[ht]
+		\centering
+		\resizebox{\linewidth}{!}{%
+		\begin{tabular}{cccccccccc}
+			\toprule
+			\textbf{Model} & \textbf{gt} & \textbf{small} & \textbf{large} & \textbf{clean} & \textbf{ft + voc} & \textbf{var+voc} & \textbf{man+clean} & \textbf{man+aug} & \textbf{large+aug} \\
+			\midrule
+			\textbf{MOS} & \textbf{3.00} & 2.74 & 2.83 & 2.76 & 2.77 & \textbf{2.96} & 2.91 & 2.81 & 2.79 \\
+			\bottomrule
+		\end{tabular}
+		}
+		\caption{average MOS predictions across different models}
+		\label{tab:mos_scores}
+	\end{table}
 	
-	All results are averaged across the models and summarized in \color{red}table 1\color{black}. As expected none of the models surpasses the ground truth value of the vocal separated segments. Additionally the distance between the highest and lowest performing model is with 0.22 score points difference only marginal. 
+	All results are averaged across the models and summarized in table \ref{tab:mos_scores}. As expected none of the models surpasses the ground truth value of the vocal separated segments. Additionally the distance between the highest and lowest performing model is with 0.22 score points difference only marginal. 
 	
 	The variance+vocoder model outperformed all other models and reached results comparable to the ground truth, indicating outputs with relatively high audio quality. At some distance follows the result of the manual+clean model, achieving a slightly worse but still comparably high predicted MOS score. What is striking is that in particular models trained on smaller datasets (independent of audio quality) seem to receive lower MOS prediction values. We suspect this trend to be provoked by noise in the output audios.
 	
@@ -476,9 +497,26 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	
 	To measure the difference of the generated histograms, we applied several common comparison metrics. First measurement is the Correlation of both histograms, with values ranging from -1 (totally uncorrelated) to 1 (totally correlated) - which draws an extremely direct connection between both bin distributions. Another popular measurement to compare histograms and distributions in general is the Chi-Square distance. Strength of the metric is the sensitivity for large distances, meaning distributions that deviate strongly from the original histogram can be detected easily and filtered out. Obtained values range from 0 to infinity, the larger the value the more mismatches the distribution. A completely different perspective allows the Intersection measure of the histograms, where the overlapping of equal bin values is computed. With the comparatively low complexity and computational cost comes quite inaccurate results, that might be fluctuating and less expressive for model performance. The higher the Intersection value, the more bin values share two distributions. A more refined measurement is the Bhattacharyya distance, which originates in the measurement of probability distribution similarity. Similar to the Chi-Square distance, the smaller the value, the higher is the distribution’s similarity. 
 	
-	\color{red}table of results histogram comparison\color{black}
+	\begin{table}[ht]
+		\centering
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{cccccccccc}
+				\toprule
+				Model & gt & small & large & clean & ft+voc & var+voc & man+clean & man+aug & large+aug \\
+				\midrule
+				MOS ↑           & \textbf{3.00} & 2.74 & 2.83 & 2.76 & 2.77 & \textbf{2.96} & 2.91 & 2.81 & 2.79 \\
+				Correlation ↑   & --   & \textbf{0.94} & 0.94 & 0.92 & 0.93 & \textbf{0.95} & 0.93 & 0.94 & 0.93 \\
+				Chi-Square ↓    & --   & \textbf{248394} & \textbf{298899} & 805762 & 649244 & 575705 & 839064 & 578248 & 360068 \\
+				Intersection ↑  & --   & 120777 & \textbf{122109} & 118189 & 119622 & \textbf{122664} & 119577 & 121230 & 121170 \\
+				Bhattacharyya ↓ & --   & 0.20 & 0.21 & 0.21 & 0.18 & \textbf{0.16} & 0.18 & 0.18 & \textbf{0.17} \\
+				\bottomrule
+			\end{tabular}
+		}
+		\caption{averaged scores of the historgram similarity to ground-truth across different models}
+		\label{tab:quantitative_eval}
+	\end{table}
 	
-	We implemented all metrics quoted above and tested them on the entirety of our models, using the same test set as for the MOS prediction. Each model is compared with the vocal separated data as our gold standard. The obtained results are averaged for each model and summarized in \color{red}table 2\color{black}. 
+	We implemented all metrics quoted above and tested them on the entirety of our models, using the same test set as for the MOS prediction. Each model is compared with the vocal separated data as our gold standard. The obtained results are averaged for each model and summarized in table \ref{tab:quantitative_eval}. 
 	
 	The variance+vocoder model outperforms all other models, achieving constant and strong results in almost every comparison measurement, indicating a clear dominance between the tested models. 
 	For the Correlation values we observe just minor differences, but the variance+vocoder model and the large model achieve the highest results with scores around 0.95. 
@@ -568,19 +606,19 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	the respective values for the used models. In this case model \emph{v3} is the
 	best one according to the SNR.
 	
+	\newpage
+	
 	%==============================================
 	%============= Mixing and Mastering ============
 	%==============================================
 	\section{Mixing and Mastering}
-
- 	Mixing & Mastering
 
 	The vocal track generated by DiffSinger posed some challenges during mixing. Inconsistent tones, robotic artifacts and a lack of natural dynamics all required extensive processing to attempt to improve its quality. Indeed, the output track contains glitches, sudden pitch shifts, muffled consonants and irregular sustain. The sustained notes sound unnaturally flat and lack vibrato. To address this, we first tried to trim segments and applied noise reduction using ReaFIR. A high-pass filter at 120 Hz (ReaEQ) removed the jarring low-frequency rumble. Given the irregular dB dynamics where some words were overly loud and others nearly inaudible. We automated a +2 dB rise during the chorus to compensate for the model’s weak projection on longer notes. To make up for some synthetic artifacts, we applied a cut at 2–3 kHz (-5 dB, Q=4) to reduce the volume of some harsh resonances. We then added a high-shelf boost at 8 kHz (+2 dB) for added clarity to handle occasional muffled sibilants. Moreover, compression was used to stabilize the uneven output and an even dB level. ReaComp set at 4:1 ratio, 20 ms attack, 100 ms release provided 6 dB of gain reduction to lower some peaks. We also used  a limiter (ReaLimit) to prevent the track from clipping. To account for the “s” and “t” sounds, we used the FabFilter PRO-DS vst-plugin. However, despite these efforts, the vocals retained an unnatural texture, which we attempted to mitigate, by applying some saturation, not just to add warmth, but also to Emulate Emily Armstrong’s raspy tone that the model failed to emulate. 
 	Mastering
 	In music production, mastering is the final stage before the release of a song or an album. The process consists of mixing and polishing the master track that comprises all single tracks in order to achieve consistency, optimal loudness and compatibility across various playback systems. Unlike mixing, which focuses on balancing individual tracks (vocals, instruments), mastering addresses the entire stereo mix as a single unite. Indeed, this phase aimed to unify the mix’s tonal balance and loudness. Thus, some EQ (FabFilter Pro-Q3) was applied to the stereo bus to mitigate the harshness at 3.5 kHz (-1.5 dB, Q=2) and add a touch of higher frequency with a high-shelf boost at 12 kHz (+1 dB). Multiband compression (FabFilter - MB) was applied to tighten the low-midrange (200–500 Hz) and reduce the “muddiness” that stems from the vocal’s uneven low-end resonance. Finally a limiter (FabFilter-L2) was set to +9 to boost loudness in accordance with modern rock and metal commercial standards.
 
 	
-	
+	\newpage
 	
 	%==============================================
 	%================ Conclusion ===================
@@ -615,6 +653,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	%================ Sources ===================
 	%==============================================
 	
+	\newpage
 	\bibliographystyle{plain}  % This style sorts references alphabetically
 	\bibliography{references}  % This will load your references.bib file
 	
