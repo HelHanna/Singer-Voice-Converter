@@ -184,6 +184,39 @@ To enhance the diversity and robustness of our audio dataset, we implemented sev
 By incorporating these augmentation strategies, we aimed to increase the robustness of the model, leading to better overall performance.
 
 
+Model 7 (manual + sorted clean)
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/v7_testing.png}
+    \caption{model 7}
+    \label{fig:bild4}
+\end{figure}
+
+As the dataset of the clean model seemed to be too small, we aimed to increase it. However, we wanted to include only “good” audio snippets, therefore, we used some scripts to automatically select other snippets that were considered to be “clean” (see refined preprocessing). This increased the dataset size to more than double the instances compared to the clean model. For this model, we used a batch size of 64 and 8 validation samples. The learning rate was set to 0.006. The model was trained for 54k epochs until the validation loss reached 0.026.
+
+Model 8
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/v8_testing.png}
+    \caption{model 8}
+    \label{fig:bild5}
+\end{figure}
+
+As we still wanted to further augment our dataset, we trained the next model with an augmented dataset. We used the segments that we manually selected and those that were selected by the scripts and used different data augmentation techniques, such as pitch shifting, time shifting, noise reduction and loudness shifting (see data augmentation) to artificially enlarge our dataset. The batchsize was set to 64, eight validation samples were used and the learning rate was kept at 0.006. The model was trained for 78k epochs until the validation loss reached almost 0.01.
+
+
+Model 9
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/v9_testing.png}
+    \caption{model 9}
+    \label{fig:bild5}
+\end{figure}
+
+Our last attempt was to train a model with data augmentation that included even more data (almost the entire dataset, except for some filtered noise/screams and rap), even though this data included some more overlapping singing and try data augmentation on this model as well. The parameters were kept constant compared to the smaller augmented model. However, this time we used our fine-tuned vocoder. We stopped the training after 113k epochs when it reached a validation loss of 0.011.
 
 
 %==============================================
