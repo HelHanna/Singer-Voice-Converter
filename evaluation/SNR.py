@@ -40,10 +40,25 @@ def calculate_SNR(path: str) -> None:
         except IndexError:
             # One of the original sound files was not synthesized
             print(f"Ignoring missing synthesized file {wav_org[i]}")
-    print(f"SNR ({path}): {np.mean(snr)}")
+
+    snr_value: np.floating = round(np.mean(snr), 3)
+
+    # Print the SNR value for the current folder
+    print(f"SNR ({path}): {snr_value}")
+
+    # Write result to file
+    with open("snr_results.txt", "a") as file:
+        file.write(f"SNR ({path}): {snr_value}\n")
 
 
 if __name__ == "__main__":
+    # Remove old results file if it exists
+    if os.path.isfile("snr_results.txt"):
+        os.remove("snr_results.txt")
+
+    # Reference value, SNR with identical files
+    calculate_SNR(ORIGINAL_PATH)
+
     for item in os.listdir(SYNTHESIZED_PATH):
         # Ignore regular files in SYNTHESIZED_PATH
         if os.path.isfile(os.path.join(SYNTHESIZED_PATH, item)):

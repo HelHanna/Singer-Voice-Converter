@@ -104,11 +104,23 @@ def calculate_F0_RMSE(path: str) -> None:
         )
 
     # Calculate F0 RMSE
-    F0RMSE = np.sqrt(np.mean((f0s_org - f0s_synth) ** 2))
-    print(f"F0_RMSE ({path})= {F0RMSE}")
+    F0RMSE = round(np.sqrt(np.mean((f0s_org - f0s_synth) ** 2)), 3)
+
+    # Print the F0 RMSE value for the current folder
+    print(f"F0 RMSE ({path}): {F0RMSE}")
+
+    with open("f0_rmse_results.txt", "a") as file:
+        file.write(f"F0 RMSE ({path}): {F0RMSE}\n")
 
 
 if __name__ == "__main__":
+    # Remove old results file if it exists
+    if os.path.isfile("f0_rmse_results.txt"):
+        os.remove("f0_rmse_results.txt")
+
+    # Reference value, F0 RMSE with identical files
+    calculate_F0_RMSE(ORIGINAL_PATH)
+
     for item in os.listdir(SYNTHESIZED_PATH):
         # Ignore regular files in SYNTHESIZED_PATH
         if os.path.isfile(os.path.join(SYNTHESIZED_PATH, item)):

@@ -33,8 +33,12 @@ def calculate_PESQ(path: str) -> None:
             wo: np.ndarray
             ws: np.ndarray
             _: int | float
-            wo, _ = librosa.load(wav_org[i], sr=16000)
-            ws, _ = librosa.load(wav_synth[i], sr=16000)
+            wo, _ = librosa.load(wav_org[i], sr=44100)
+            ws, _ = librosa.load(wav_synth[i], sr=44100)
+
+            # Resample to 16000 to get a PESQ supported sampling rate
+            wo = librosa.resample(wo, orig_sr=44100, target_sr=16000)
+            ws = librosa.resample(ws, orig_sr=44100, target_sr=16000)
             n: int = len(wo) - len(ws)
             if n > 0:
                 ws = np.hstack((ws, np.zeros(abs(n))))
@@ -45,11 +49,24 @@ def calculate_PESQ(path: str) -> None:
             # One of the original sound files was not synthesized
             print(f"Ignoring missing synthesized file {wav_org[i]}")
 
+    pesq_value: np.floating = round(np.mean(score), 3)
+
     # Print the PESQ value for the current folder
-    print(f"PESQ ({path}): {np.mean(score)}")
+    print(f"PESQ ({path}): {pesq_value}")
+
+    # Write result to file
+    with open("pesq_results.txt", "a") as file:
+        file.write(f"PESQ ({path}): {pesq_value}\n")
 
 
 if __name__ == "__main__":
+    # Remove old results file if it exists
+    if os.path.isfile("pesq_results.txt"):
+        os.remove("pesq_results.txt")
+
+    # Reference value, PESQ with identical files
+    calculate_PESQ(ORIGINAL_PATH)
+
     for item in os.listdir(SYNTHESIZED_PATH):
         # Ignore regular files in SYNTHESIZED_PATH
         if os.path.isfile(os.path.join(SYNTHESIZED_PATH, item)):
