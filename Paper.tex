@@ -270,7 +270,12 @@
 	
 	Though HTCondor provides the possibility to distribute the executed job among several GPUs to decrease the running time, we restricted our training to 1 GPU (less potential to run into errors) and requested 16GB of GPU memory. After running for a maximum of 1 day, jobs get automatically kicked from the server by default. The image shows an example submit file that we used in our project.
 	
-	\color{red}image of example submit file\color{black}
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/submit_file.png}
+		\caption{example submit file}
+		\label{fig:submit_file}
+	\end{figure}
 	
 	To gain control for optimal stopping points, we monitored the training process with tensorboard, which visualizes the current epoch, the course of training loss and validations loss and the results validation samples.
 	
@@ -296,39 +301,80 @@
 	
 	\subsubsection{Model 1 (small)}
 	
-	The first generated model served primarily as a test trial to check whether the entire workflow, from extracting input data to generate outputs, functions. Unsurprisingly we kept the standard configuration from above, without using any form of data augmentation or fine tuning and without using a pretrained variance model. The dataset consisted of all available studio albums and we used 6 segments for validation and we used a batch size of 64. We stopped the training after roughly an hour and 9900 trained epochs, while the training loss was still on decline - though the validation loss already stabilized around 0.04 (as displayed in image \color{red}v1\color{black}). In the following we will refer to this model as small.
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v1_training+testing.png}
+		\caption{training and validation loss of model 1}
+		\label{fig:model1}
+	\end{figure}
 	
-	\color{red}image of v1 (training+testing)\color{black}
+	The first generated model served primarily as a test trial to check whether the entire workflow, from extracting input data to generate outputs, functions. Unsurprisingly we kept the standard configuration from above, without using any form of data augmentation or fine tuning and without using a pretrained variance model. The dataset consisted of all available studio albums and we used 6 segments for validation and we used a batch size of 64. We stopped the training after roughly an hour and 9900 trained epochs, while the training loss was still on decline - though the validation loss already stabilized around 0.04 (as displayed in image \ref{fig:model1}). In the following we will refer to this model as small.
 	
 	\subsubsection{Model 2 (small)}
 	
-	The second generated model serves as an extensive version of the small model in the section above. All configuration and hyperparameters were transmitted with the only difference of a longer training duration until the training loss stabilizes. After a little more than 70k epochs, the aux mel training loss decreased to 0.009 and the mel training loss reached the minimum of 0.06. Worth mentioning is the increasing fluctuation of the validation loss, starting after reaching the minimal value (see image \color{red}v2\color{black} ). Due to no subjective improvement of the model compared to Model 1, this version is not sustained in the following evaluation process. 
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v2_training.png}
+		\caption{training loss of model 2}
+		\label{fig:model2train}
+	\end{figure}
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v2_testing.png}
+		\caption{validation loss of model 2}
+		\label{fig:model2val}
+	\end{figure}
 	
-	\color{red}images of v2 (training, testing)\color{black} 
+	The second generated model serves as an extensive version of the small model in the section above. All configuration and hyperparameters were transmitted with the only difference of a longer training duration until the training loss stabilizes. After a little more than 70k epochs, the aux mel training loss decreased to 0.009 and the mel training loss reached the minimum of 0.06. Worth mentioning is the increasing fluctuation of the validation loss, starting after reaching the minimal value (see image \ref{fig:model2val}). Due to no subjective improvement of the model compared to Model 1, this version is not sustained in the following evaluation process. 
+
 	
 	\subsubsection{Model 3 (large)}
 	
-	The idea for the third model was to enlarge the training data size to observe the effect on the model’s performance. So, we extended the data to all available Linkin Parks albums, studio albums as well as live albums but without applying any additional data augmentation techniques. We kept the batch size of 64, but increased the amount of validation samples (now 10) to balance the training validation ratio. The enlarged dataset decelerated the training process massively, reaching 16 hours and 78k epochs of training until the training loss converged. Final loss values comparable to those of the small model were reached during training, minimal value of 0.01 for the training aux mel loss and 0.028 for the validation aux mel loss (see image \color{red}v3\color{black} ). This model is referred to as large during evaluation. 
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v3_training+testing.png}
+		\caption{training and validation loss of model 3}
+		\label{fig:model3}
+	\end{figure}
 	
-	\color{red}image of v3 (training+testing)\color{black}
+	The idea for the third model was to enlarge the training data size to observe the effect on the model’s performance. So, we extended the data to all available Linkin Parks albums, studio albums as well as live albums but without applying any additional data augmentation techniques. We kept the batch size of 64, but increased the amount of validation samples (now 10) to balance the training validation ratio. The enlarged dataset decelerated the training process massively, reaching 16 hours and 78k epochs of training until the training loss converged. Final loss values comparable to those of the small model were reached during training, minimal value of 0.01 for the training aux mel loss and 0.028 for the validation aux mel loss (see image \ref{fig:model3} ). This model is referred to as large during evaluation. 
+
 	
 	\subsubsection{Model 4 (clean)}
 	
-	Next, we generated a clean model, to investigate the relevance of noisy input data on the model performance and audio quality of the results. Therefore we trained the model solely with the reduced hand segmented dataset, that does not contain noisy data or segments with Mike Shinoda’s voice. Due to the smaller dataset we reduced the amount of segments per batch to 64, trained with a lower learning rate of 0.004 and used only 8 samples for validation. Subsequently the duration until loss conversion shrunk to 52k epochs and 6 hours training time. As displayed in image \color{red}v4\color{black}, the training mel loss reached a minimum of 0.006 and the validation mel loss of 0.03. This model will be referred to as clean.
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v4_training+testing.png}
+		\caption{training and validation loss of model 4}
+		\label{fig:model4}
+	\end{figure}
 	
-	\color{red}image of v4 (training+testing)\color{black}
+	Next, we generated a clean model, to investigate the relevance of noisy input data on the model performance and audio quality of the results. Therefore we trained the model solely with the reduced hand segmented dataset, that does not contain noisy data or segments with Mike Shinoda’s voice. Due to the smaller dataset we reduced the amount of segments per batch to 64, trained with a lower learning rate of 0.004 and used only 8 samples for validation. Subsequently the duration until loss conversion shrunk to 52k epochs and 6 hours training time. As displayed in image \ref{fig:model4}, the training mel loss reached a minimum of 0.006 and the validation mel loss of 0.03. This model will be referred to as clean.
+	
 	
 	\subsubsection{Model 5 (large+ft+vocoder)}
 	
-	After probing the relevance of dataset size and data quality, we investigated whether fine-tuning with clean data shows a positive effect. To receive encompassing trends, the fine tuning is also extended to the vocoder. We pretrained the model with the exact same configurations as the large model, though integrated the fine-tuned HifiGAN vocoder instead of the standard vocoder. Following up on the pretraining, where much but low-quality data was used, the model is fine-tuned on the clean dataset to focus on learning the subtle nuances in Chester’s voice. The validation set for the fine-tuning consists of 8 validation samples, all other parameter values were retained from the pretraining. During training, the model confirmed 8000 epochs and ran about 1.5 hours before the validation loss reached convergence. The aux mel training loss minimized to 0.007 and the aux mel validation loss to 0.035 (see image \color{red}v5\color{black} ). This model will be referred to as ft+vocoder.
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v5_training+testing.png}
+		\caption{training and validation loss of model 5}
+		\label{fig:model5}
+	\end{figure}
 	
-	\color{red}image of v5 (training+testing)\color{black}
+	After probing the relevance of dataset size and data quality, we investigated whether fine-tuning with clean data shows a positive effect. To receive encompassing trends, the fine tuning is also extended to the vocoder. We pretrained the model with the exact same configurations as the large model, though integrated the fine-tuned HifiGAN vocoder instead of the standard vocoder. Following up on the pretraining, where much but low-quality data was used, the model is fine-tuned on the clean dataset to focus on learning the subtle nuances in Chester’s voice. The validation set for the fine-tuning consists of 8 validation samples, all other parameter values were retained from the pretraining. During training, the model confirmed 8000 epochs and ran about 1.5 hours before the validation loss reached convergence. The aux mel training loss minimized to 0.007 and the aux mel validation loss to 0.035 (see image \ref{fig:model5} ). This model will be referred to as ft+vocoder.
+
 	
 	\subsubsection{Model 6 (huge+variance+vocoder)}
 	
-	The task of the variance+vocoder model was to investigate whether the combination of variance and acoustic model is superior over the standard acoustic model and which importance the pitch and tension prediction takes for our experiment. The process is parted into two steps; first we trained the variance model on the large dataset for 11 hours and 97k epochs, then we inferred the large dataset with the variance model and trained the acoustic model on them for 2.5 hours and 17k epochs. The variance model was configured to predict pitch and tension of Chester’s voice. Additionally to the large dataset we further enriched the variance data with the DiffSinger built-in data augmentation method for the acoustic model training.  For both models we integrated the fine-tuned vocoder, used batch size 64  and 10 sample segments for validation. When stopped training the acoustic model achieved a mel aux loss of 0.017 for training and 0.028 for validation (see image \color{red}v6\color{black} ), further the variance model reached a pitch accuracy of 0.5.
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{graphics/v6_training+testing.png}
+		\caption{training and validation loss of model 6}
+		\label{fig:model6}
+	\end{figure}
 	
-	\color{red}image of v6 (training+testing)\color{black}
+	The task of the variance+vocoder model was to investigate whether the combination of variance and acoustic model is superior over the standard acoustic model and which importance the pitch and tension prediction takes for our experiment. The process is parted into two steps; first we trained the variance model on the large dataset for 11 hours and 97k epochs, then we inferred the large dataset with the variance model and trained the acoustic model on them for 2.5 hours and 17k epochs. The variance model was configured to predict pitch and tension of Chester’s voice. Additionally to the large dataset we further enriched the variance data with the DiffSinger built-in data augmentation method for the acoustic model training.  For both models we integrated the fine-tuned vocoder, used batch size 64  and 10 sample segments for validation. When stopped training the acoustic model achieved a mel aux loss of 0.017 for training and 0.028 for validation (see image \ref{fig:model6} ), further the variance model reached a pitch accuracy of 0.5.
 	
 	
 	\subsubsection{Model 7 (manual + sorted clean)}
@@ -360,7 +406,7 @@
 		\centering
 		\includegraphics[width=0.5\textwidth]{graphics/v9_testing.png}
 		\caption{model 9}
-		\label{fig:bild5}
+		\label{fig:bild6}
 	\end{figure}
 	
 	Our last attempt was to train a model with data augmentation that included even more data (almost the entire dataset, except for some filtered noise/screams and rap), even though this data included some more overlapping singing and try data augmentation on this model as well. The parameters were kept constant compared to the smaller augmented model. However, this time we used our fine-tuned vocoder. We stopped the training after 113k epochs when it reached a validation loss of 0.011.
