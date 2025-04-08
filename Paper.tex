@@ -84,13 +84,9 @@ After collecting the data, we started with the preprocessing. Preprocessing is o
 
 As we wanted to train the model to recognize the specific patterns of Chester Bennington’s voice, including his pitch, timbre and vocal fry, a good preprocessing is important to ensure that all relevant information is captured by the model and all irrelevant information (noise, other voices, instrumentals) is excluded to provide the best learning. Including instrumentals and noisy data would potentially lead to the model learning these unwanted features, resulting in a bad overall model output. This being said, we tried to preprocess our data, such that we excluded instrumentals and noise and included clean singing voice data, which was later passed through the model.
 
-<<<<<<< HEAD
+
 \subsubsection{Segmentation}
 After the vocal extraction, the next step was to segment the data. Segmenting the audios into smaller chunks is important as it can significantly enhance the model’s performance and the reliability of the forced alignment that followed this step \cite{Rybach2009}. The quality of the alignment heavily depends on the segmentation, as a wrong segmentation will lead to a wrong alignment. The effectiveness of our model is, therefore, closely tied to the goodness of the audio segmentation. 
-=======
-\subsubsection*{Segmentation}
-After the vocal extraction, the next step was to segment the data. Segmenting the audios into smaller chunks is important as it can significantly enhance the model’s performance and the reliability of the forced alignment that followed this step \cite{Rybach2009}. The quality of the alignment heavily depends on the segmentation, as a wrong segmentation will lead to a wrong alignment. The effectiveness of our model is, therefore, closely tied to the goodness of the audio segmentation.
->>>>>>> 7ef8c5b9b17717688e8230bc0116750a54caace7
 
 The best way to ensure a good segmentation would be to do it manually, however, as our dataset is quite big, this would have been out of the scope of this project, so we searched for automatic segmentation methods.
 
@@ -104,26 +100,9 @@ Whisper-timestamped turned out to be the best model to segment our audios. It wo
 
 Following an initial phase of trial and error, we implemented a custom script utilizing whisper-timestamped to segment our audio data. The script first verifies the file format, ensuring that only audio files (with the ending wav or mp3) are processed and that only those files whose names conformed to our naming convention (i.e., filenames containing either six or nine digits) were included. Once the appropriate files were selected, we used whisper-timestamped to generate segment-level transcriptions along with time-aligned boundaries. Most of the segments were fine, but some segments were extremely short (i.e., less than two seconds). To avoid these short segments and to enhance the usability of the resulting segments for annotation purposes, we introduced a minimum segment duration of four seconds. Thus, segments falling below this threshold were automatically concatenated with the subsequent segment to ensure that each snippet was sufficiently long to carry meaningful context for the automatic labeling. We also had some issues with hard cuts, where word endings were cut off too strictly. To mitigate this problem, we introduced a small buffer between consecutive segments (0.1s). This slight overlap helped preserve the natural flow of speech and ensured smoother transitions, which improved both the accuracy of our transcriptions and the overall quality of the audio snippets.
 
-<<<<<<< HEAD
+
 \subsubsection{Manual Segmentation}
-=======
-After segmenting our data, we had to align our audio data with textual/phonetic annotations. Here, we encountered another challenge as some segments were silent, resulting in an error, thus, we excluded segments with zero variance before aligning the data.
 
-\subsubsection*{Alignment Tools}
-We initially used the Montreal Forced Aligner (MFA), which is a widely recognized tool for automatic speech-text alignment. The MFA is built upon the Kaldi speech recognition toolkit. It is designed to provide robust phonetic segmentation by leveraging triphone acoustic models and speaker adaptation techniques \cite{McAuliffe2017}. MFA has been successfully applied to various languages and datasets; however, in our case, the MFA did not reveal convincing results. We attributed this to the fact that the MFA is primarily designed for spoken language, while singing poses some additional challenges, such as extended phonemes and pitch variations.
-
-To improve alignment quality, we explored alternative tools and came across SOFA (Singing-Oriented Forced Aligner), which functions similarly to the Montreal Forced Aligner (MFA) but is specifically designed for singing voice. According to its Github page, SOFA offers simpler installation, better performance, and faster inference speed compared to MFA. After testing it on a few examples, we observed slightly improved results \cite{Greenleaf2001}; however, the alignments were still not consistently convincing. We continued our search and discovered LabelMakr, “a GUI tool to help users easily generate SVS phoneme-level labels” \cite{spicytigermeat} for singing voice synthesis (SVS), particularly intended for use with DiffSinger. While initial tests with a small sample also fell short of expectations, we observed that LabelMakr's performance significantly improved when it was applied to our full dataset, such that we ended up with some meaningful alignments that we used for our training.
-
-\subsubsection*{Data Conversion with nnsvs-db-converter}
-We used the nnsvs-db-converter, a Python tool for converting vocal databases with HTS mono labels into DiffSinger format to make them compatible with variance models for predicting pitch and timing \cite{nnsvsdbconverter}. It handles sample segmentation by ensuring that each sample has a maximum length and an acceptable number of pauses between segments, and converts silent phonemes (e.g., sil, pau) to standardized representations (SP and AP for breaths). The script requires minimal external dependencies, making it easily accessible. In addition, it supports language definitions that specify vowels and liquids for better segmentation and timing handling, and it can estimate MIDI pitch and timing information for the use of variance models.
-
-In our project, we used this converter to convert our .lab files, which contained the phoneme alignments, into .ds files to ensure they were compatible with the DiffSinger framework and could utilize variance-based pitch and timing predictions.
-
-\subsubsection*{SlurCutter Exploration}
-We also had a look into SlurCutter, which is a specialized tool that is designed to assist in the creation of datasets for DiffSinger. Its primary function is to edit MIDI sequences that are stored in .ds files to facilitate the preparation of data for variance model training \cite{openvpi}. However, it requires a lot of time and effort as this process is done manually, so we decided not to do it on a large scale.
-
-\subsubsection*{Manual Segmentation}
->>>>>>> 7ef8c5b9b17717688e8230bc0116750a54caace7
 To include more data and improve model performance, we additionally included two live albums in our dataset. As many segments contained screaming from the audience, we went through them and cut out unwanted parts manually with Praat, a tool for speech analysis and phonetic research.
 
 
@@ -249,7 +228,7 @@ Our last attempt was to train a model with data augmentation that included even 
 %==============================================
 \section{Evaluation}
 
-\subsection*{DiffSinger}
+\subsection{DiffSinger}
 The base model we used for our training and synthesizing is DiffSinger. It is an
 acoustic model, meaning it can map linguistik and symbolic input (like text or
 notes) into acoustic features, used to generate actual audio. Acoustic features
@@ -272,7 +251,7 @@ are saved. Not using another model to make a first prediction would cause the
 generated data to be a lot worse, since less steps are used and therefore less
 noise is removed.
 
-\subsection*{Choosing a model}
+\subsection{Choosing a model}
 
 To be able to choose the best model for generating the vocals, we had to
 evaluate them. We chose five different evaluation criteria. These criteria were
@@ -285,7 +264,7 @@ Each model was evaluated based on these criteria, and compared to the original
 sound files. "gt" in the model lists refer to the \emph{ground truth}, or
 original sound files. The other names refer to the respective model iteration.
 
-\subsection*{Used files}
+\subsection{Used files}
 The following 14 segments were used in the evaluation:
 \begin{itemize}
     \item Segment 22 from album 1, song 4
@@ -304,11 +283,11 @@ The following 14 segments were used in the evaluation:
     \item Segment 8 from album 5, song 3
 \end{itemize}
 
-\subsection*{Criteria}
+\subsection{Criteria}
 
 \color{red}INSERT OTHER CRITERIA HERE\color{black}
 
-\subsubsection*{Perceptual Evaluation of Speed Quality (PESQ)}
+\subsubsection{Perceptual Evaluation of Speed Quality (PESQ)}
 While the evaluation using SingMOS is considered a subjective evaluation, PESQ
 is an objective Mean Opinion Score evaluation. The result of PESQ is usually a
 score of the perceived speech quality on a scale of 1.0 to 4.5 (with narrowband,
@@ -325,7 +304,7 @@ is more sensitive to certain frequencies. The reference value for identical
 files (comparing the original sound files with themselves), is approximately 4.64, as
 expected.
 
-\subsubsection*{PESQ results}
+\subsubsection{PESQ results}
 \begin{figure}[hbtp]
     \includegraphics[width=\textwidth]{evaluation/graphs/PESQ.png}
     \caption{Perceptual Evaluation of Speech Quality results per model}
@@ -338,7 +317,7 @@ score. The graph clearly shows that the models we evaluated do not come close to
 what is considered an excellent result in PESQ. The best models according to
 PESQ are \emph{v3} and \emph{v6}.
 
-\subsubsection*{F0 Root mean square error (F0 RMSE)}
+\subsubsection{F0 Root mean square error (F0 RMSE)}
 The F0 value of speech, often also referred to as pitch or fundamental
 frequency, is measured in Hertz, and describes the rate of vibration of the
 vocal folds. The range of F0 is usually between 50 Hz to 450 Hz. This evaluation
@@ -351,7 +330,7 @@ our case this was not needed, as we already aligned each file using DTW before.
 The reference value when comparing the original sound files with themselves, is
 0.0 as there is no difference between them and therefore no error.
 
-\subsubsection*{F0 RMSE results}
+\subsubsection{F0 RMSE results}
 \begin{figure}[hbtp]
     \includegraphics[width=\textwidth]{evaluation/graphs/F0RMSE.png}
     \caption{Fundamental frequency root mean square error}
@@ -363,7 +342,7 @@ the fundamental frequency, sometimes also referred to as pitch, for each model
 we used. The shown reference value of 0.0 for \emph{gt} is a perfect value and
 therefore usually not achieved in real calculations.
 
-\subsubsection*{Speech-to-Noise ratio (SNR)}
+\subsubsection{Speech-to-Noise ratio (SNR)}
 The Speech-to-Noise ratio (SNR) compares the ratio of speech in a sound file, to
 the amount of background noise. The formula used in this evaluation is \\
 \[
@@ -374,7 +353,7 @@ the original file (signal) divided by the RMSE of the generated file (noise). It
 is usually measured in decibels (dB). The reference value for a perfect ratio is
 0.0 as shown by comparing the original sound files to themselves.
 
-\subsubsection*{SNR results}
+\subsubsection{SNR results}
 \begin{figure}[hbtp]
     \includegraphics[width=\textwidth]{evaluation/graphs/SNR.png}
     \caption{Speech-to-noise ratio}
