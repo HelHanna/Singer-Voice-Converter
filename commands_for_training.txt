@@ -1,0 +1,72 @@
+## you need a submit file, with ending .submit: 
+
+
+# HTCondor submit description file
+# Everything with a leading # is a comment
+
+initialdir              = /nethome/hhelbig
+executable              = /nethome/hhelbig/Neural_Networks/scripts/basic_training.sh
+output                  = /scratch/hhelbig/logs/tooluse/logfiles/basic_training.sh.$(ClusterId).$(Year)_$(Month)_$(Day)_$(SUBMIT_TIME).out
+error                   = /scratch/hhelbig/logs/tooluse/logfiles/basic_training.sh.$(ClusterId).$(Year)_$(Month)_$(Day)_$(SUBMIT_TIME).err
+log                     = /scratch/hhelbig/logs/tooluse/logfiles/basic_training.sh.$(ClusterId).$(Year)_$(Month)_$(Day)_$(SUBMIT_TIME).log
+request_CPUs            = 1
+request_memory          = 16G
+request_GPUs            = 1
+requirements            = (GPUs_GlobalMemoryMb >= 16000)
+#environment = WANDB_API_KEY=e09a6f9c463727378b48489f62d694d3c3747515
+getenv = True
+queue 1
+
+## you need an sh file, ending .sh:
+
+#!/bin/bash
+
+#Login to Weights & Biases
+source /nethome/hhelbig/miniconda3/etc/profile.d/conda.sh
+
+conda activate tooluse
+export PYTHONPATH=$(pwd)
+
+export CUDA_HOME=/usr/bin/nvidia-smi   # Adjust this based on your system
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+cd Neural_Networks/DiffSinger
+python scripts/train.py --config configs/chester_acoustic.yaml --exp_name acoustic_chester_v1 --reset
+
+########################
+- use ssh lst to log in (alternative: use ssh hhelbig@login.lst.uni-saarland.de)
+- activate your conda environment: conda activate tooluse 
+- go into the logfiles to see your progress
+- cat basic_training.sh.9865.2025_03_13_1741885794.out
+- use ssh submit
+- use chmod +x basic_training.sh (go into cd scripts)
+- use python scripts/binarize.py --config configs/chester_acoustic.yaml to binarize the data
+- use condor_submit Neural_Networks/submits/basic_training.submit to submit your job
+- use condor_q to see your current jobs and your job number
+- use condor_rm 5768 to remove your current job (replace the number with your job number)
+- use cd .. to go to higher directories
+- use cd to go to the login node
+- use scratch/hhelbig
+-use mkdir to make directories
+
+
+- use cd Neural_Networks/DiffSinger/checkpoints/acoustic_chester_v2
+- use tensorboard --logdir .
+
+- on your local device use:
+ssh -L 6010:localhost:6010 hhelbig@login.lst.uni-saarland.de
+
+- then copy and paste in your browser: http://localhost:6010/
+
+
+- to see what conda environments exist: conda env list
+
+- to convert wav and lab to ds files: python db_converter.py -l max_length -s max_silences -L path/to/language-def.json -mD path/to/nnsvs/db
+define max_length and max_silences e.g. 30 20
+
+
+
+- use  scp hhelbig@login.lst.uni-saarland.de:Neural_Networks/DiffSinger/reference_data/emily_3_seg000.wav "C:/Users/hanna/OneDrive - Universität des Saarlandes/Dokumente/Semester 9/Software Project/Neural_Networks/compare_results" to copy the results to your local server
+- use python scripts/infer.py acoustic reference_data/emily_3_seg000.ds --exp acoustic
+_chester_v3 to generate wavs with your model

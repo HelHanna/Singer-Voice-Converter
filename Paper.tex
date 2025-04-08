@@ -45,25 +45,57 @@
 \end{tabular}}
 
 \rhead{\begin{tabular}{r} 
-		\StudNameOne\\
 		\StudNameTwo\\
 		\StudNameThree\\
+		\StudNameOne\\
 		\StudNameFour\\
 \end{tabular}}
 
 
 \newcommand{\subtitle}{\textbf{Singing Voice Synthesis with DiffSinger}}
-\newcommand{\StudNameOne}{\textbf{David Matkovic} - 7038335 }
 \newcommand{\StudNameTwo}{\textbf{Jona Hoppe} - 7034173}
 \newcommand{\StudNameThree}{\textbf{Hanna Helbig} - 7008726}
+\newcommand{\StudNameOne}{\textbf{David Matkovic} - 7038335 }
 \newcommand{\StudNameFour}{\textbf{Maximilian Schmidt} - 2560076}
 
 \usepackage{setspace}  % Include the setspace package
 
 \onehalfspacing
-
-
 \begin{document}
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+
+    {\LARGE\bfseries Saarland University \par}
+    \vspace{0.5cm}
+    {\Large Faculty of Language Science and Technology \par}
+    \vfill
+
+    % Title
+    {\Huge\bfseries Singing Voice Synthesis with DiffSinger\par}
+    \vspace{0.25cm}
+    {\large\textit{A comprehensive Guide for Training a DiffSinger Model}\par}
+    \vspace{1cm}
+
+    % Subtitle or course context
+    {\Large Winter Semester 2024/25 \par}
+    \vspace{0.5cm}
+    {\large Prof. Dr. Dietrich Klakow \par}
+    \vfill
+
+    % Student names
+    {\Large\textbf{Project Members:}\par}
+    \vspace{0.3cm}
+    {\large\StudNameTwo\par}
+    {\large\StudNameThree\par}
+    {\large\StudNameOne\par}
+    {\large\StudNameFour\par}
+
+    \vfill
+    {\large\today\par}
+\end{titlepage}
+
+
 	
 	
 	\tableofcontents
@@ -554,7 +586,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	model. The first bar with a value of 4.64 is the reference value with a perfect
 	score. The graph clearly shows that the models we evaluated do not come close to
 	what is considered an excellent result in PESQ. The best models according to
-	PESQ are \emph{v3} and \emph{v6}.
+	PESQ are the large and the manual+sorted clean model.
 	
 	\subsubsection{F0 Root mean square error (F0 RMSE)}
 	The F0 value of speech, often also referred to as pitch or fundamental
@@ -603,7 +635,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	the wanted signal, and background noise, in our case it refers to
 	Speech-to-noise ratio. It describes the ratio of speech to background noise.
 	Figure \ref{fig:snr} shows the reference value of 0.0 for the ground truth and
-	the respective values for the used models. In this case model \emph{v3} is the
+	the respective values for the used models. In this case the large model is the
 	best one according to the SNR.
 	
 	\newpage
@@ -625,7 +657,6 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	%==============================================
 	\section{Conclusion}
 	
-	Conclusion
 	The goal of our project was to develop an SVS model that could replicate the unique voice of Chester Bennington. Our approach focused not just on the training itself, but on creating a comprehensive pipeline that would allow others to have a guide that covers everything from data processing, data augmentation, training, evaluation and post-processing of the data to be able to use DiffSinger with their own data. So our intention is not just to create a replica of Chester's voice, but to provide an understandable guide to creating a DiffSinger model.
 	
 	After creating our dataset with the unprocessed audio, we began pre-processing, an important step that determines the quality of our model. The first step was to extract the vocals to ensure that the model was only trained on relevant vocal data. This was followed by the segmentation and alignment of the data, as well as the creation of ds-files, which are needed for the use of DiffSinger.
@@ -640,9 +671,11 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	We trained different models experimenting with different parameters such as the size of the dataset, different quality of the dataset, the use of data augmentation, different vocoders and different learning rate and fine-tuning settings.
 	
 	
-	Despite the many different experiments, the results of the models are relatively comparable. Some segments are processed well by (almost) all models,however, the output of other segments is inadequate, as the voice sounds distorted and rough or other background noises appear to be involved. In many segments, the phonemes or phoneme boundaries also appear to be incorrect. To quantify model performance, we applied two types of evaluation: predicted Mean Opinion Score (MOS) using SingMOS and a mel-spectrogram histogram comparison. The variance+vocoder model consistently outperformed others across both evaluation types, with MOS scores approaching the ground truth and strong spectral similarity to real vocals. However, even this best-performing model could not fully replicate the expressive detail and clarity of the original vocals, often struggling with distorted phonemes, rough transitions, or alignment errors. 
+	Despite extensive experimentation, the overall model performances remain relatively close. While some vocal segments are handled well by most models, others result in distorted, rough-sounding outputs or noticeable background noise. Common issues that we encounted during inference include misaligned or incorrect phonemes and inconsistent transitions. To quantify the model performances, we used five evaluation methods: predicted Mean Opinion Score (MOS) via SingMOS, mel-spectrogram histogram comparisons, objective MOS using PESQ, F0 Root Mean Square Error (F0 RMSE), and Speech-to-Noise Ratio (SNR). The variance+vocoder model revealed the best MOS scores and a strong spectral similarity to real vocals. The manual+sorted clean model achieved the best results for PESQ. Model 8 (manual+sorted+augmented clean) achieved the best results in the F0 RMSE evaluation and the large model achieved the best results for the SNR evaluation. This shows that the models have different strengths and weaknesses and in the end achieved quite similar results. Even the top-performing models could not fully replicate the expressive detail and clarity of the original vocals, often struggling with distorted phonemes, rough transitions, or alignment errors. 
 	
-	A probable issue could be the automatic alignment. To address this problem, aligning the data manually would almost certainly lead to a better model as many boundaries are inadequate. However, this step requires a non-negligible amount of time, offering potential for future research. There can also be made improvements within the data augmentation as the project has highlighted the importance of careful and balanced augmentation to avoid degrading the model’s performance.
+	A probable issue could be the automatic alignment. To address this problem, aligning the data manually would almost certainly lead to a better model as many boundaries are inadequate. However, this step requires a non-negligible amount of time, offering potential for future research. There can also be made improvements within the data augmentation as the project has highlighted the importance of careful and balanced augmentation to avoid degrading the model’s performance. Aquiring enough high-quality data is a challenging task considering that Chester Bennington is dead and the amount of data, therefore, limited. However, when transferring our approach to modelling the voice of another singer, collecting more high-quality data is crucial for obtaining convincing results.
+	
+	Our last step was the mixing and mastering. As the DiffSinger-generated vocals exhibited robotic artifacts, pitch shifts, and a lack of natural dynamics, we used noise reduction, EQ adjustments, dynamic automation, compression, limiting, de-essing, and saturation to improve clarity and emulate a raspy vocal tone. During the mastering, EQ and multiband compression balanced harshness and muddiness, while a limiter boosted loudness to match commercial rock and metal standards. 
 	
 	The main contribution of this project is the creation of a comprehensive guide for setting up and training a DiffSinger model, from data pre-processing to fine-tuning the model and post-processing. By documenting each stage of the process, we provide a valuable resource for others who wish to emulate or improve upon our work in speech synthesis. This guide serves as a step-by-step reference for anyone interested in training a speech synthesis model with DiffSinger, covering not only technical details, but also the challenges we encountered and how they were overcome.
 	
