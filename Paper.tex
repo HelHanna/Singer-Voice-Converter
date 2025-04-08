@@ -91,8 +91,8 @@
     {\large\StudNameOne\par}
     {\large\StudNameFour\par}
 
-    \vfill
-    {\large\today\par}
+    \vfill     
+    {\large April 8, 2025\par}
 \end{titlepage}
 
 
@@ -126,7 +126,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	The less naive approach to generate a target voice is singing voice conversion (SVS). Singing voice synthesis models take the lyrics, the musical score and the respective duration as input and generate the audio file from scratch. During the training process the model predicts frame-level information of the target voice, which are then transferred to an audio signal by a vocoder. \cite{Cho2021} A prominent SVS system is the DiffSinger architecture.
 	
 	The singing voice conversion and the singing voice synthesis approach both come with advantages and difficulties, on which our model choice is based. SVC is a manipulation of the source audio and therefore often outperforms SVS models in preserving the singers expressiveness and naturalness, whereas SVS grant the user full control over the model and much more flexibility regarding the input songs (because it’s not reliant on existing performances). More flexibility increases the data and time consumption of synthesis models during training, which leads to higher computational costs compared with conversion models. 
-	
+	\newpage
 	Another significant factor was the public data availability for our project. We have plenty of training data for our target voice (Chester Bennington), including 7 studio albums, 3 live albums and even more live performances - but we encounter a sparse data situation for Emily’s voice, where only a single album is published and even less audios are available, where both perform the same song.
 	
 	Regarding all advantages and factors mentioned above, we concluded that singing voice synthesis models fit our project better than the naive conversion approach. The sparse data situation for songs jointly performed by target and source singer, which is substantial for SVC training, forces us to focus on synthesizing methods. Furthermore we gain more flexibility and control over the model, which enables us to be more creative with the input data and gives light to a potential follow-up project - to generate new lyrics and songs with the voice of Chester Bennington.
@@ -140,6 +140,7 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	The vast majority of recent SVS models use deep neural networks (DNNs) to preserve natural and expressive outputs. Important is the partition into submodules: an acoustic model, that is trained to predict acoustic and pitch related features and a neural vocoder that generates the audiowave based on the predicted information. This aspect of divide and conquer plays a decisive role in the success of neural models. Well-known DNN architectures are XiaoiceSing \cite{Cho2021}, which adopts the FastSpeech text to speech model and extends it with note duration and pitch information prediction; HifiSinger \cite{Cho2021}, a model generally based on XiaoiceSing, but using a GAN vocoder to prevent the model from over-smoothing; DiffSinger \cite{DiffSinger2021}, which improves the weaknesses of the previous models by introducing a diffusion probabilistic model (= gradually applies noise to the mel-spectrogram until the noise is gaussian distributed with subsequent denoising steps back to a mel-spectrogram).
 	
 	Apart from different approaches to enhance the target voice naturalness, low resource availability is a prevailing challenge in singing voice synthesis. Numerous models were designed to be more data efficient, requiring only small portions of training data, compared to the conventional models. The Sinsy \cite{Cho2021} model produces proper results with 1 hour of conditioned training data, partly due to a partition of the models architecture into further submodules. Zero shot models (for example StyleSinger and YourTTS) request merely minutes of training data to transfer voices in different languages or styles. \cite{Casanova2021},\cite{Zhang2024}
+	\newpage
 	
 	Expressive and powerful models are also increasingly attracting the interest of large tech companies to market voice generators commercially. In 2022, Microsoft published its software DeepSinger \cite{Ren2020}, which conducts data mining on music websites to generate more training data. 
 	
@@ -173,7 +174,6 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	noise is removed.
 	
 	\newpage
-	
 	%==============================================
 	%================ Preprocessing ================
 	%==============================================
@@ -191,15 +191,17 @@ After obtaining the data, we proceeded to isolate the vocal tracks with the help
 	
 
 	\subsubsection{Vocal Extraction}
- Music source separation consists in isolating single sound sources from a mixed audio signal. When the vocal track is extracted from a mix, this practice is usually called vocal extraction. \cite{Vincent2006} categorize source separation into techniques that rely on statistical assumptions (e.g., Independent Component Analysis) and the recent  models that rely on deep learning approaches. In the case of vocal extraction, the methods employed make use of time-frequency representations such as spectrogram masks or raw waveform modeling, with the aim to isolate the singer’s voice while minimizing artifacts and instrumental interferences \cite{Huang2014} Nevertheless, contemporary deep learning methods outperform traditional statistical approaches precisely because they do not operate under the assumptions of independence or basic spectral models. However, this assumption almost never holds true in real-world music recordings, as there is no independence between sources. Conversely, deep learning methods capture complex, nonlinear representations of music directly from data \cite{Uhlich2017}. By learning higher-level features (timbre and harmonic relationships) they are better able to adapt even to recordings, handling as a result more complex scenarios and producing cleaner vocal isolations. The separation process is considerably more robust than with statistical models that tend to falter when sources share similar frequency bands or show correlated dynamics \cite{Vincent2006}.
+ Music source separation consists in isolating single sound sources from a mixed audio signal. When the vocal track is extracted from a mix, this practice is usually called vocal extraction. \cite{Vincent2006} categorize source separation into techniques that rely on statistical assumptions (e.g., Independent Component Analysis) and the recent  models that rely on deep learning approaches. In the case of vocal extraction, the methods employed make use of time-frequency representations such as spectrogram masks or raw waveform modeling, with the aim to isolate the singer’s voice while minimizing artifacts and instrumental interferences \cite{Huang2014} Nevertheless, contemporary deep learning methods outperform traditional statistical approaches precisely because they do not operate under the assumptions of independence or basic spectral models. However, this assumption almost never holds true in real-world music recordings, as there is no independence between sources. Conversely, deep learning methods capture complex, nonlinear representations of music directly from data \cite{Uhlich2017}. By learning higher-level features (timbre and harmonic relationships) they are better able to adapt even to recordings, handling as a result more complex scenarios and producing cleaner vocal isolations. 
+    \newpage
+The separation process is considerably more robust than with statistical models that tend to falter when sources share similar frequency bands or show correlated dynamics \cite{Vincent2006}.
  
-	The deep neural network approach used for extracting vocals or instruments from a mix can be broken down in two main strategies. The first one is the spectrogram-based separation which converts the audio waveform into a time-frequency representation (usually through the Short-Time Fourier Transform) and subsequently trains a neural network to predict masks or direct magnitudes for each source \cite{Stoeter202} Thus the aim of the spectrogram-based approach is to minimize cross-talk between instruments in the final extracted signal by leveraging both magnitude and phase information in each frequency bin. As a result, each audio frame is split into small frequency bins, each corresponding to a discrete range of frequencies. On the other hand, the second strategy is based on waveform-based separation in the time domain. For instance, Demucs introduced an encoder-decoder architecture operating on raw waveforms that preserves amplitude envelopes more effectively than frequency-domain approaches (Défossez et al., 2019). Yet, while spectrogram-based methods have proven more suitable for certain genres and recordings, time-domain networks offer a superior performance when dealing with fast transients (e.g., drum hits) or complex stereo imaging. 
+	The deep neural network approach used for extracting vocals or instruments from a mix can be broken down in two main strategies. The first one is the spectrogram-based separation which converts the audio waveform into a time-frequency representation (usually through the Short-Time Fourier Transform) and subsequently trains a neural network to predict masks or direct magnitudes for each source \cite{Stoeter202} Thus the aim of the spectrogram-based approach is to minimize cross-talk between instruments in the final extracted signal by leveraging both magnitude and phase information in each frequency bin. As a result, each audio frame is split into small frequency bins, each corresponding to a discrete range of frequencies. On the other hand, the second strategy is based on waveform-based separation in the time domain. For instance, Demucs introduced an encoder-decoder architecture operating on raw waveforms that preserves amplitude envelopes more effectively than frequency-domain approaches \cite{Defossez2019}. Yet, while spectrogram-based methods have proven more suitable for certain genres and recordings, time-domain networks offer a superior performance when dealing with fast transients (e.g., drum hits) or complex stereo imaging. 
 
 
 	In our project, we experimented with four different vocal extraction algorithms, namely Demucs, Open-Unmix (UMX), Spleeter, and Ultimate Vocal Remover (UVR) in order to determine the most effective solution for isolating vocals with minimal noise or other instrumental interferences. Each of them leverages deep learning in different ways and is constituted by different architectures to tackle source separation. 
 Developed by the French music streaming service Deezer, Spleeter offers multi-stem separation options (2-stem, 4-stem, 5-stem) and operates faster than many alternatives \cite{Stoeter2020}. While Spleeter is highly accessible for quick extractions, its output contains audible cross-talk if the input mix is dense or heavily compressed. The algorithm we fiddled around with was Demucs. Published by Facebook AI Research, it takes a time-domain approach and processes audio directly as a waveform and uses a deep convolutional encoder-decoder network. As a result, it is able to maintain more natural-sounding dynamics. However, just as Défossez et al., 2019 observed, Demucs leaves faint reverb tails or minor bleed-through in the vocal stem. Subsequently, we explored Open-Unmix (UMX), a spectrogram-based method that applies U-Net structures to time-frequency representations of audio signal. UMX systematically masks out non-vocal components in the frequency domain which yields clean vocal extractions \cite{Stoeter2018}. However, in spite of its advantages, UMX tends to introduce phase-related artifacts and the so-called “hollow” tonalities in more complex tracks. Finally, we experimented with Ultimate Vocal Remover (UVR), which uses multiple separation backends including variations of MDX-Net, Demucs, and VR Architecture. Different models can be tested through either a GUI or the command line, picking the algorithm that best suits the purpose. After several thorough comparisons, we came to the conclusion that UVR consistently produced the cleanest vocal stems with barely perceptible instrument bleed or noise, especially when using the latest MDX-based models.  Indeed, its performance can certainly be attributed to the combination of a vast array of available models.
 
- 	
+ 	\newpage
 	\subsubsection{Segmentation}
 	After the vocal extraction, the next step was to segment the data. Segmenting the audios into smaller chunks is important as it can significantly enhance the model’s performance and the reliability of the forced alignment that followed this step \cite{Rybach2009}. The quality of the alignment heavily depends on the segmentation, as a wrong segmentation will lead to a wrong alignment. The effectiveness of our model is, therefore, closely tied to the goodness of the audio segmentation. 
 	
@@ -213,7 +215,9 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	
 	Whisper-timestamped turned out to be the best model to segment our audios. It works with different model sizes: base, small, medium, and large. We used the small model as it was sufficiently well.
 	
-	Following an initial phase of trial and error, we implemented a custom script utilizing whisper-timestamped to segment our audio data. The script first verifies the file format, ensuring that only audio files (with the ending wav or mp3) are processed and that only those files whose names conformed to our naming convention (i.e., filenames containing either six or nine digits) were included. Once the appropriate files were selected, we used whisper-timestamped to generate segment-level transcriptions along with time-aligned boundaries. Most of the segments were fine, but some segments were extremely short (i.e., less than two seconds). To avoid these short segments and to enhance the usability of the resulting segments for annotation purposes, we introduced a minimum segment duration of four seconds. Thus, segments falling below this threshold were automatically concatenated with the subsequent segment to ensure that each snippet was sufficiently long to carry meaningful context for the automatic labeling. We also had some issues with hard cuts, where word endings were cut off too strictly. To mitigate this problem, we introduced a small buffer between consecutive segments (0.1s). This slight overlap helped preserve the natural flow of speech and ensured smoother transitions, which improved both the accuracy of our transcriptions and the overall quality of the audio snippets.
+	Following an initial phase of trial and error, we implemented a custom script utilizing whisper-timestamped to segment our audio data. The script first verifies the file format, ensuring that only audio files (with the ending wav or mp3) are processed and that only those files whose names conformed to our naming convention (i.e., filenames containing either six or nine digits) were included. Once the appropriate files were selected, we used whisper-timestamped to generate segment-level transcriptions along with time-aligned boundaries. Most of the segments were fine, but some segments were extremely short (i.e., less than two seconds). 
+	\newpage
+To avoid these short segments and to enhance the usability of the resulting segments for annotation purposes, we introduced a minimum segment duration of four seconds. Thus, segments falling below this threshold were automatically concatenated with the subsequent segment to ensure that each snippet was sufficiently long to carry meaningful context for the automatic labeling. We also had some issues with hard cuts, where word endings were cut off too strictly. To mitigate this problem, we introduced a small buffer between consecutive segments (0.1s). This slight overlap helped preserve the natural flow of speech and ensured smoother transitions, which improved both the accuracy of our transcriptions and the overall quality of the audio snippets.
 	
 	
 	\subsubsection{Manual Segmentation}
@@ -233,7 +237,9 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	\subsubsection{Alignment Tools}
 	We initially used the Montreal Forced Aligner (MFA), which is a widely recognized tool for automatic speech-text alignment. The MFA is built upon the Kaldi speech recognition toolkit. It is designed to provide robust phonetic segmentation by leveraging triphone acoustic models and speaker adaptation techniques \cite{McAuliffe2017}. MFA has been successfully applied to various languages and datasets; however, in our case, the MFA did not reveal convincing results. We attributed this to the fact that the MFA is primarily designed for spoken language, while singing poses some additional challenges, such as extended phonemes and pitch variations. 
 	
-	To improve alignment quality, we explored alternative tools and came across SOFA (Singing-Oriented Forced Aligner), which functions similarly to the Montreal Forced Aligner (MFA) but is specifically designed for singing voice. According to its Github page, SOFA offers simpler installation, better performance, and faster inference speed compared to MFA. After testing it on a few examples, we observed slightly improved results \cite{Greenleaf2001}; however, the alignments were still not consistently convincing. We continued our search and discovered LabelMakr, “a GUI tool to help users easily generate SVS phoneme-level labels” \cite{spicytigermeat} for singing voice synthesis (SVS), particularly intended for use with DiffSinger. While initial tests with a small sample also fell short of expectations, we observed that LabelMakr's performance significantly improved when it was applied to our full dataset, such that we ended up with some meaningful alignments that we used for our training.
+	To improve alignment quality, we explored alternative tools and came across SOFA (Singing-Oriented Forced Aligner), which functions similarly to the Montreal Forced Aligner (MFA) but is specifically designed for singing voice. According to its Github page, SOFA offers simpler installation, better performance, and faster inference speed compared to MFA. After testing it on a few examples, we observed slightly improved results \cite{Greenleaf2001}; however, the alignments were still not consistently convincing. 
+	\newpage
+We continued our search and discovered LabelMakr, “a GUI tool to help users easily generate SVS phoneme-level labels” \cite{spicytigermeat} for singing voice synthesis (SVS), particularly intended for use with DiffSinger. While initial tests with a small sample also fell short of expectations, we observed that LabelMakr's performance significantly improved when it was applied to our full dataset, such that we ended up with some meaningful alignments that we used for our training.
 	
 	\subsubsection{Manual Alignment}
 	In addition to our segmented audio snippets, we fully labeled two complete songs — Over Each Other and The Emptiness Machine — using LabelMakr, which we later used during inference. Since these full-song annotations were created after the short segments had already been labeled, the initial alignments were expectedly poor. To address this, we manually refined the boundaries: we shifted misaligned ones, added missing boundaries, and removed others — particularly SP (speech pause) and AP (aspiration pause) annotations, which frequently appeared in inappropriate positions.
@@ -251,7 +257,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 		\caption{manual alignment}
 		\label{fig:bild3}
 	\end{figure}
-	
+	\newpage
 	\subsubsection{Data Conversion with nnsvs-db-converter}
 	We used the nnsvs-db-converter, a Python tool for converting vocal databases with HTS mono labels into DiffSinger format to make them compatible with variance models for predicting pitch and timing \cite{nnsvsdbconverter}. It handles sample segmentation by ensuring that each sample has a maximum length and an acceptable number of pauses between segments, and converts silent phonemes (e.g., sil, pau) to standardized representations (SP and AP for breaths). The script requires minimal external dependencies, making it easily accessible. In addition, it supports language definitions that specify vowels and liquids for better segmentation and timing handling, and it can estimate MIDI pitch and timing information for the use of variance models.
 	
@@ -268,18 +274,13 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	To scale this cleaning process across the entire dataset, we wrote several scripts to automate the filtering process. First, we analyzed how different types of data snippets varied across the corpus. We manually selected representative examples of each category—screaming, multi-voice, clear voice, and rap—and stored them in separate folders to serve as our reference data.
 	
 	Initially, we attempted to map each song snippet to the category it was most similar to. However, this yielded inconsistent and often unreliable classifications, such that the categories had a large overlap and seemed to be meaningless. We then tried to identify dominant acoustic features that could meaningfully distinguish between categories. We found that fundamental frequency was a strong discriminator between screaming and clear singing. After analyzing our reference examples, we set a threshold of 230 Hz to filter out heavy screams and background noise—this removed many problematic segments while retaining the majority of clean vocals. The remaining screams in the clean voice examples were retained as they were less problematic than the really heavy ones and the background noises.
-	
+	\newpage
 	To distinguish between rap and singing, we found that syllable rate is a suitable discriminator. Since our target singer, Chester Bennington, does not perform the rap sections, we applied a threshold of six syllables per second to exclude the fast-paced vocal segments.
-	
 	For segments with multiple overlapping voices, we explored various characteristics and thresholds, but none of them seemed to be a reliable discriminator. Therefore, we returned to the similarity-based approach—this time using only a single, well-chosen example per category to guide the classification, which surprisingly seemed to work better than with the bigger example set. While the categories were still imperfect, this method provided the most usable approximation.
 	
 	Ultimately, we combined the resulting clear voice set (without screams, rap, multiple voices) with other data to train three of our models (see model training).
 	
-	
-	
-	
 	\newpage
-	
 	%==============================================
 	%================ Training =====================
 	%==============================================
@@ -302,7 +303,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	
 	\begin{itemize}
 		\item \textbf{Pitch Shifting}: We wrote a script to adjust the pitch of each audio file by a semitone both upwards and downwards, creating two additional variations per original file. This technique helps the model become invariant to pitch differences as the pitch changes heavily between Chester’s different singing modes (e.g., compare harmonic singing versus screaming). We also tried to make more drastic pitch shifting, however, then the voice seemed to be too different from the original, so we did not include it in our model training.
-		
+		\newpage
 		\item \textbf{Loudness Adjustment}: The audio files’ loudness was modified by increasing and decreasing the volume by 10\%. This approach aids the model in handling variations in speaking volume and recording conditions.
 		
 		\item \textbf{Noise Reduction}: We applied a noise reduction technique to suppress background noises such as ambient sounds and audience noise. This process aimed to enhance the clarity of the singing voice and thus, enhance model performance. However, we found that the denoising also suppressed the screaming parts quite a bit, so we decreased the initially high penalty to only 30\% noise reduction and used a less strict high-pass filter. For some parts, the screaming was still denoised too heavily, however, we used the denoised parts too to make the model more robust.
@@ -321,7 +322,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	Initially we based our training setup on existing Google colab notebooks and other publicly available tutorials and used the procedures as orientation. Though  with colab notebooks, we encountered some fundamental and major problems relatively quickly, which forced us to build our setup from scratch. To avoid GPU usage limitations, we trained all our models on the LST servers of the Saarland University. \cite{lst-wiki}
 	
 	The LST cluster of the Saarland University uses HTCondor to schedule jobs and distributes them to free GPUs in incoming order. Users request the necessary computational cost for a job via submit files and transfer the file to be executed (must be a bash script). The dependencies are managed inside the bash script with an anaconda environment or in the submit file using a docker. For this purpose, we created an anaconda environment running on python version 3.8.20 and installed the necessary requirements following the DiffSinger installation guide. \cite{openvpi-diffsinger}
-	
+	\newpage
 	Though HTCondor provides the possibility to distribute the executed job among several GPUs to decrease the running time, we restricted our training to 1 GPU (less potential to run into errors) and requested 16GB of GPU memory. After running for a maximum of 1 day, jobs get automatically kicked from the server by default. The image shows an example submit file that we used in our project.
 	
 	\begin{figure}[htbp]
@@ -342,7 +343,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	We trained nine different versions of the DiffSinger model, applying various configuration alternations and providing datasets of different size and audio quality. All models were trained under equal conditions, which means that we always used the same conda environment for the runs and submitted, up to minor changes, identical bash scripts. The majority of training parameters remained constant and unchanged throughout the entire training procedure - therefore the configuration parameters in question are presented once at the beginning and apply to all training trials. Modified values (for example data augmentation) and integrated modules (for example the usage of a variance model) get specified in the section of the particular run. 
 	
 	The main architecture of the DiffSinger model is trained to predict mel-spectrograms out of the input data, but that is not exactly what we challenged ourselves. To generate audio files from the mel-spectrograms a vocoder is necessary. For a start we stuck to the HifiGAN vocoder recommended in the openvpi DiffSinger support, which we ultimately fine-tuned on Chester’s voice (training see below in the section vocoder). 
-	
+	\newpage
 	The repository offers several built-in models operating as pitch extractor and harmonic-noise separator as well, recommending RMVPE for extracting pitch and Vocal Remover (VR) to separate the harmonic and aperiodic parts of the singer's voice. For the shallow diffusion configuration again we were oriented strongly towards the given guide, copying the preset parameter values. 
 	
 	Another relevant decision, to minimize the training loss and presumably improve the mel-spectrograms, is the right choice of optimizer and learning rate. Previous experiments and the paper itself achieved promising results with the AdamW optimizer and different learning step sizes. So there was no reason for us to integrate different optimizers than AdamW and unless otherwise stated we set the learning rate to 0.0006. 
@@ -420,6 +421,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 
 	
 	\subsubsection{Model 6 (huge+variance+vocoder)}
+	
 	
 	\begin{figure}[htbp]
 		\centering
@@ -503,7 +505,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 		\item Segment 10 from album 3. song 6
 		\item Segment 8 from album 5, song 3
 	\end{itemize}
-	
+	\newpage
 	\subsection{Criteria}
 	
 	\subsubsection{MOS prediction}
@@ -532,7 +534,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	All results are averaged across the models and summarized in table \ref{tab:mos_scores}. As expected none of the models surpasses the ground truth value of the vocal separated segments. Additionally the distance between the highest and lowest performing model is with 0.22 score points difference only marginal. 
 	
 	The variance+vocoder model outperformed all other models and reached results comparable to the ground truth, indicating outputs with relatively high audio quality. At some distance follows the result of the manual+clean model, achieving a slightly worse but still comparably high predicted MOS score. What is striking is that in particular models trained on smaller datasets (independent of audio quality) seem to receive lower MOS prediction values. We suspect this trend to be provoked by noise in the output audios.
-	
+	\newpage
 	\subsubsection{Histogram Comparison}
 	
 	In the next step, we wanted to evaluate the models based on a comparison of the mel spectrograms. A recent blog post introduced a method, where the mel spectrograms are converted to histograms (distribution of the bin values), which are easier to compare. \cite{mel-spectrogram} This approach resembles the comparison of the underlying bin distribution and therefore takes the place of a meta evaluation. 
@@ -564,7 +566,7 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	For the Correlation values we observe just minor differences, but the variance+vocoder model and the large model achieve the highest results with scores around 0.95. 
 	
 	While keeping in mind that the Intersection value might possibly be less informative than other comparison measurements, the variance+vocoder and large model again achieve the highest results, with the most overlapping of bin values. Furthermore, models trained or fine-tuned on the clean dataset perform the worst with this metric. Potentially, the “high quality” data is shifting or skewing the results in either direction, which preserves general distribution properties but changes the bin overlap.
-	
+	\newpage
 	The Chi-Square distance remains the only measurement, where the variance+vocoder model is beaten by other models - with the small and large model outperforming the rest, both reaching values below 300000. However, no enlightening tendencies or correlations between model hyperparameters and Chi-square distance are observable, therefore the values appear to be rather meaningless for the evaluation.
 	The variance+vocoder model scores the smallest Bhattacharyya distance with the value 0.16, once more outperforming all other tested models. In general models with the fine-tuned vocoder reached comparatively good results, where further research is necessary to investigate potential reasons for this effect.
 	
@@ -681,7 +683,9 @@ Developed by the French music streaming service Deezer, Spleeter offers multi-st
 	We trained different models experimenting with different parameters such as the size of the dataset, different quality of the dataset, the use of data augmentation, different vocoders and different learning rate and fine-tuning settings.
 	
 	
-	Despite extensive experimentation, the overall model performances remain relatively close. While some vocal segments are handled well by most models, others result in distorted, rough-sounding outputs or noticeable background noise. Common issues that we encounted during inference include misaligned or incorrect phonemes and inconsistent transitions. To quantify the model performances, we used five evaluation methods: predicted Mean Opinion Score (MOS) via SingMOS, mel-spectrogram histogram comparisons, objective MOS using PESQ, F0 Root Mean Square Error (F0 RMSE), and Speech-to-Noise Ratio (SNR). The variance+vocoder model revealed the best MOS scores and a strong spectral similarity to real vocals. The manual+sorted clean model achieved the best results for PESQ. Model 8 (manual+sorted+augmented clean) achieved the best results in the F0 RMSE evaluation and the large model achieved the best results for the SNR evaluation. This shows that the models have different strengths and weaknesses and in the end achieved quite similar results. Even the top-performing models could not fully replicate the expressive detail and clarity of the original vocals, often struggling with distorted phonemes, rough transitions, or alignment errors. 
+	Despite extensive experimentation, the overall model performances remain relatively close. While some vocal segments are handled well by most models, others result in distorted, rough-sounding outputs or noticeable background noise. Common issues that we encounted during inference include misaligned or incorrect phonemes and inconsistent transitions. To quantify the model performances, we used five evaluation methods: predicted Mean Opinion Score (MOS) via SingMOS, mel-spectrogram histogram comparisons, objective MOS using PESQ, F0 Root Mean Square Error (F0 RMSE), and Speech-to-Noise Ratio (SNR). The variance+vocoder model revealed the best MOS scores and a strong spectral similarity to real vocals. The manual+sorted clean model achieved the best results for PESQ. Model 8 (manual+sorted+augmented clean) achieved the best results in the F0 RMSE evaluation and the large model achieved the best results for the SNR evaluation. 
+	\newpage
+This shows that the models have different strengths and weaknesses and in the end achieved quite similar results. Even the top-performing models could not fully replicate the expressive detail and clarity of the original vocals, often struggling with distorted phonemes, rough transitions, or alignment errors. 
 	
 	A probable issue could be the automatic alignment. To address this problem, aligning the data manually would almost certainly lead to a better model as many boundaries are inadequate. However, this step requires a non-negligible amount of time, offering potential for future research. There can also be made improvements within the data augmentation as the project has highlighted the importance of careful and balanced augmentation to avoid degrading the model’s performance. Aquiring enough high-quality data is a challenging task considering that Chester Bennington is dead and the amount of data, therefore, limited. However, when transferring our approach to modelling the voice of another singer, collecting more high-quality data is crucial for obtaining convincing results.
 	
