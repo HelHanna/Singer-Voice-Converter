@@ -10,7 +10,7 @@ This project aims to emulate Chester Bennington's vocal style using a fine-tuned
 ## Dataset Creation
 We compiled a dataset to capture the range of Chester’s vocal characteristics:
 
-- **Source:** 8 Linkin Park albums (~100 tracks)
+- **Source:** 8 Linkin Park albums 
 - **Method:** Curated from YouTube for high-quality audio, focusing on both studio and live recordings to capture diverse vocal traits.
 
 ## Preprocessing Pipeline
@@ -70,10 +70,18 @@ We based our work on the [openvpi DiffSinger repository](https://github.com/open
 
 We trained **nine different models**, experimenting with varying configurations, datasets, and augmentation techniques. Key results:
 
+##  Model Summary
+
 - **Model 1**: Small model, 9900 epochs, used for basic testing.
-- **Model 4 (Clean)**: Clean dataset, 6 hours, 52k epochs for better performance with cleaner data.
-- **Model 5 (Fine-Tuned Vocoder)**: Fine-tuned HifiGAN vocoder, 1.5 hours, 8000 epochs, improved audio quality.
+- **Model 2 (Extended Small)**: 70k epochs, no significant improvement over Model 1.
+- **Model 3 (Large)**: Full dataset without augmentation, 78k epochs, validation loss: 0.028.
+- **Model 4 (Clean)**: Clean dataset, 52k epochs, validation loss: 0.03.
+- **Model 5 (Fine-Tuned Vocoder)**: Fine-tuned HiFiGAN vocoder, 8000 epochs, validation loss: 0.007.
+- **Model 6 (Variance + Acoustic)**: Pitch/tension prediction, 78k total epochs, pitch accuracy: 0.5.
+- **Model 7 (Manual Cleaned)**: Manually cleaned dataset, 54k epochs, validation loss: 0.026.
+- **Model 8 (Augmented Dataset)**: Augmented with pitch/time shifts, 78k epochs, validation loss: 0.01.
 - **Model 9 (Augmented + Fine-Tuned Vocoder)**: Large augmented dataset with fine-tuned vocoder, 113k epochs, validation loss: 0.011.
+
 
 ---
 
@@ -85,7 +93,7 @@ After generating the vocals, we applied several post-processing techniques to im
 - **Saturation** to replicate Chester Bennington's raspy, warm vocal tone.
 
 ---
-used resources:
+
 # Related Repositories
 
 These repositories are used in this project:
